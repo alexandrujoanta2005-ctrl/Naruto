@@ -10,7 +10,7 @@
 <title>Calea Ninja</title>
 <link rel="manifest" href="./manifest.json">
 <link rel="apple-touch-icon" href="./apple-touch-icon.png">
-<link rel="stylesheet" href="./style.css?v=10">
+<link rel="stylesheet" href="./style.css?v=12">
 </head>
 <body class="naruto-home-v3">
 
@@ -107,8 +107,9 @@
         muted
         loop
         playsinline
-        preload="metadata"
-        poster="./assets/characters/naruto.png"
+        preload="auto"
+        poster="./assets/home-video-poster.jpg"
+        webkit-playsinline
         aria-label="Video Home"
       >
         <source src="./assets/home-video.mp4" type="video/mp4">
@@ -244,7 +245,7 @@
   <button type="button" class="nav-item" data-page="profile.html"><span class="nav-icon">👤</span><span>Profil</span></button>
 </nav>
 
-<script src="./app.js?v=10"></script>
+<script src="./app.js?v=12"></script>
 
 <script>
 document.addEventListener("DOMContentLoaded",()=>{
@@ -401,16 +402,37 @@ document.addEventListener("DOMContentLoaded",()=>{
   const heroImage=document.getElementById("heroCharacterImage");
   const heroVideo=document.getElementById("heroHomeVideo");
 
-  // Dacă există assets/home-video.mp4, video-ul înlocuiește imaginea de pe Home.
-  // Dacă fișierul lipsește sau nu poate fi redat, rămâne automat imaginea personajului.
+  // HOME VIDEO v12: video-ul este afisat imediat in locul imaginii.
+  // Imaginea personajului apare doar daca fisierul video chiar esueaza.
   if(heroVideo){
-    const showVideo=()=>{
-      hero.classList.add("home-video-ready");
-      heroVideo.play().catch(()=>{});
+    hero.classList.add("home-video-mode");
+    heroVideo.muted=true;
+    heroVideo.defaultMuted=true;
+    heroVideo.volume=0;
+
+    const tryPlay=()=>{
+      const result=heroVideo.play();
+      if(result && typeof result.catch==="function"){
+        result.catch(()=>{
+          // iOS poate cere prima atingere; video-ul/posterul ramane vizibil.
+          const unlock=()=>{
+            heroVideo.muted=true;
+            heroVideo.play().catch(()=>{});
+            document.removeEventListener("touchstart",unlock,true);
+            document.removeEventListener("pointerdown",unlock,true);
+          };
+          document.addEventListener("touchstart",unlock,true);
+          document.addEventListener("pointerdown",unlock,true);
+        });
+      }
     };
-    heroVideo.addEventListener("loadeddata",showVideo,{once:true});
-    heroVideo.addEventListener("canplay",showVideo,{once:true});
-    heroVideo.addEventListener("error",()=>hero.classList.remove("home-video-ready"));
+
+    if(heroVideo.readyState>=2) tryPlay();
+    else heroVideo.addEventListener("canplay",tryPlay,{once:true});
+
+    heroVideo.addEventListener("error",()=>{
+      hero.classList.remove("home-video-mode");
+    });
   }
   const speech=document.getElementById("characterSpeech");
   const portrait=document.getElementById("profilePortrait");

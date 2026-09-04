@@ -1,9 +1,10 @@
 
-const CACHE="ninja-pwa-v11";
+const CACHE="ninja-pwa-v12";
 const ASSETS=[
   "./","./index.html","./quiz.html","./missions.html","./jutsu.html","./profile.html","./inventory.html",
   "./style.css","./app.js","./questions.js","./quiz.js",
   "./manifest.json","./icon-192.png","./icon-512.png","./apple-touch-icon.png",
+  "./assets/home-video-poster.jpg",
   "./assets/characters/naruto.png","./assets/characters/sasuke.png","./assets/characters/sakura.png","./assets/characters/kakashi.png","./assets/characters/itachi.png","./assets/characters/gaara.png"
 ];
 
@@ -22,19 +23,31 @@ self.addEventListener("activate",event=>{
 self.addEventListener("fetch",event=>{
   if(event.request.method!=="GET")return;
 
-  // Nu cache-uim fisiere video mari si nu intoarcem index.html daca video-ul lipseste.
-  if(event.request.destination==="video" || /\.(mp4|webm|mov)(\?|$)/i.test(event.request.url)){
+  const url=new URL(event.request.url);
+
+  // Video-ul se ia direct din retea pentru suport corect al Range requests pe iPhone.
+  if(event.request.destination==="video" || /\.(mp4|webm|mov)(\?|$)/i.test(url.pathname)){
     event.respondWith(fetch(event.request));
     return;
   }
 
-  event.respondWith(
-    caches.match(event.request).then(cached=>{
-      return cached || fetch(event.request).then(response=>{
+  // Pentru pagini/CSS/JS folosim network-first ca actualizarile sa apara imediat.
+  if(event.request.mode==="navigate" || /\.(html|css|js)$/.test(url.pathname)){
+    event.respondWith(
+      fetch(event.request).then(response=>{
         const copy=response.clone();
         caches.open(CACHE).then(cache=>cache.put(event.request,copy)).catch(()=>{});
         return response;
-      }).catch(()=>caches.match("./index.html"));
-    })
+      }).catch(()=>caches.match(event.request).then(r=>r||caches.match("./index.html")))
+    );
+    return;
+  }
+
+  event.respondWith(
+    caches.match(event.request).then(cached=>cached || fetch(event.request).then(response=>{
+      const copy=response.clone();
+      caches.open(CACHE).then(cache=>cache.put(event.request,copy)).catch(()=>{});
+      return response;
+    }))
   );
 });

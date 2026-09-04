@@ -1599,12 +1599,13 @@ a{color:inherit}
   object-position:center bottom;
   transform:translateX(-50%);
   opacity:0;
+  visibility:hidden;
   pointer-events:none;
   filter:drop-shadow(0 18px 20px rgba(0,0,0,.45)) saturate(1.03) contrast(1.02);
   transition:opacity .25s ease;
 }
-.hero-character.home-video-ready .hero-home-video{opacity:1;}
-.hero-character.home-video-ready .hero-character-image{opacity:0;}
+.hero-character.home-video-mode .hero-home-video{opacity:1; visibility:visible;}
+.hero-character.home-video-mode .hero-character-image{opacity:0!important; visibility:hidden!important;}
 .hero-character-image{transition:opacity .25s ease;}
 
 .hero-character.realistic-mode.talking .hero-home-video{
