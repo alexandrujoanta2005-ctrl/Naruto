@@ -1702,3 +1702,65 @@ a{color:inherit}
     bottom:142px;
   }
 }
+
+/* =========================================================
+   HOME VIDEO v16 - VIDEO PE TOATA ZONA SCENEI
+   Cand personajul are video, clipul umple toata zona mare Home.
+   Panourile STREAK / RANG si actiunile raman deasupra.
+========================================================= */
+.hero-character.realistic-mode.home-video-mode{
+  left:0!important;
+  right:0!important;
+  top:0!important;
+  bottom:0!important;
+  width:100%!important;
+  height:100%!important;
+  max-width:none!important;
+  transform:none!important;
+  z-index:4;
+  pointer-events:none;
+}
+.hero-character.realistic-mode.home-video-mode .hero-home-video{
+  position:absolute;
+  inset:0!important;
+  width:100%!important;
+  height:100%!important;
+  max-width:none!important;
+  border-radius:24px;
+  object-fit:cover!important;
+  object-position:center center!important;
+  transform:none!important;
+  background:#050505;
+  box-shadow:none;
+  filter:saturate(1.05) contrast(1.04);
+}
+.hero-character.realistic-mode.home-video-mode .hero-aura,
+.hero-character.realistic-mode.home-video-mode .hero-shadow{
+  display:none!important;
+}
+
+/* Panourile raman lizibile peste video. */
+.hero-character.home-video-mode::after{
+  content:"";
+  position:absolute;
+  inset:0;
+  z-index:6;
+  pointer-events:none;
+  border-radius:24px;
+  background:linear-gradient(90deg,rgba(0,0,0,.15),transparent 24%,transparent 76%,rgba(0,0,0,.15));
+}
+
+@media(max-width:560px){
+  .hero-character.realistic-mode.home-video-mode{
+    inset:0!important;
+    width:100%!important;
+    height:100%!important;
+  }
+  .hero-character.realistic-mode.home-video-mode .hero-home-video{
+    inset:0!important;
+    width:100%!important;
+    height:100%!important;
+    border-radius:24px;
+    object-fit:cover!important;
+  }
+}
