@@ -10,7 +10,7 @@
 <title>Calea Ninja</title>
 <link rel="manifest" href="./manifest.json">
 <link rel="apple-touch-icon" href="./apple-touch-icon.png">
-<link rel="stylesheet" href="./style.css?v=9">
+<link rel="stylesheet" href="./style.css?v=10">
 </head>
 <body class="naruto-home-v3">
 
@@ -99,6 +99,20 @@
         src="./assets/characters/naruto.png"
         alt="Personaj ninja"
       >
+
+      <video
+        id="heroHomeVideo"
+        class="hero-home-video"
+        autoplay
+        muted
+        loop
+        playsinline
+        preload="metadata"
+        poster="./assets/characters/naruto.png"
+        aria-label="Video Home"
+      >
+        <source src="./assets/home-video.mp4" type="video/mp4">
+      </video>
     </div>
 
     <div class="right-action-panel">
@@ -230,7 +244,7 @@
   <button type="button" class="nav-item" data-page="profile.html"><span class="nav-icon">👤</span><span>Profil</span></button>
 </nav>
 
-<script src="./app.js?v=9"></script>
+<script src="./app.js?v=10"></script>
 
 <script>
 document.addEventListener("DOMContentLoaded",()=>{
@@ -385,6 +399,19 @@ document.addEventListener("DOMContentLoaded",()=>{
 
   const hero=document.getElementById("heroCharacter");
   const heroImage=document.getElementById("heroCharacterImage");
+  const heroVideo=document.getElementById("heroHomeVideo");
+
+  // Dacă există assets/home-video.mp4, video-ul înlocuiește imaginea de pe Home.
+  // Dacă fișierul lipsește sau nu poate fi redat, rămâne automat imaginea personajului.
+  if(heroVideo){
+    const showVideo=()=>{
+      hero.classList.add("home-video-ready");
+      heroVideo.play().catch(()=>{});
+    };
+    heroVideo.addEventListener("loadeddata",showVideo,{once:true});
+    heroVideo.addEventListener("canplay",showVideo,{once:true});
+    heroVideo.addEventListener("error",()=>hero.classList.remove("home-video-ready"));
+  }
   const speech=document.getElementById("characterSpeech");
   const portrait=document.getElementById("profilePortrait");
   const portraitEmoji=document.getElementById("profilePortraitEmoji");

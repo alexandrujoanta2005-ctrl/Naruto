@@ -1,5 +1,5 @@
 
-const CACHE="ninja-pwa-v9";
+const CACHE="ninja-pwa-v11";
 const ASSETS=[
   "./","./index.html","./quiz.html","./missions.html","./jutsu.html","./profile.html","./inventory.html",
   "./style.css","./app.js","./questions.js","./quiz.js",
@@ -21,6 +21,13 @@ self.addEventListener("activate",event=>{
 
 self.addEventListener("fetch",event=>{
   if(event.request.method!=="GET")return;
+
+  // Nu cache-uim fisiere video mari si nu intoarcem index.html daca video-ul lipseste.
+  if(event.request.destination==="video" || /\.(mp4|webm|mov)(\?|$)/i.test(event.request.url)){
+    event.respondWith(fetch(event.request));
+    return;
+  }
+
   event.respondWith(
     caches.match(event.request).then(cached=>{
       return cached || fetch(event.request).then(response=>{
