@@ -72,7 +72,7 @@
       btn.addEventListener("click",installApp);
     });
     if("serviceWorker" in navigator){
-      navigator.serviceWorker.register("./service-worker.js?v=12",{scope:"./",updateViaCache:"none"}).catch(console.warn);
+      navigator.serviceWorker.register("./service-worker.js?v=15",{scope:"./",updateViaCache:"none"}).catch(console.warn);
     }
   });
 

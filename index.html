@@ -10,7 +10,7 @@
 <title>Calea Ninja</title>
 <link rel="manifest" href="./manifest.json">
 <link rel="apple-touch-icon" href="./apple-touch-icon.png">
-<link rel="stylesheet" href="./style.css?v=12">
+<link rel="stylesheet" href="./style.css?v=15">
 </head>
 <body class="naruto-home-v3">
 
@@ -108,11 +108,12 @@
         loop
         playsinline
         preload="auto"
-        poster="./assets/home-video-poster.jpg"
+        poster="./assets/characters/naruto.png"
         webkit-playsinline
+        disablepictureinpicture
+        controlslist="nodownload noplaybackrate"
         aria-label="Video Home"
       >
-        <source src="./assets/home-video.mp4" type="video/mp4">
       </video>
     </div>
 
@@ -245,7 +246,7 @@
   <button type="button" class="nav-item" data-page="profile.html"><span class="nav-icon">👤</span><span>Profil</span></button>
 </nav>
 
-<script src="./app.js?v=12"></script>
+<script src="./app.js?v=15"></script>
 
 <script>
 document.addEventListener("DOMContentLoaded",()=>{
@@ -253,6 +254,7 @@ document.addEventListener("DOMContentLoaded",()=>{
   const characters={
     naruto:{
       image:"./assets/characters/naruto.png",
+      video:"./assets/videos/naruto.mp4",
       fullName:"Uzumaki Naruto",
       village:"Konoha",
       rank:"Genin",
@@ -273,6 +275,7 @@ document.addEventListener("DOMContentLoaded",()=>{
     },
     sasuke:{
       image:"./assets/characters/sasuke.png",
+      video:"./assets/videos/sasuke.mp4",
       fullName:"Uchiha Sasuke",
       village:"Konoha",
       rank:"Genin",
@@ -293,6 +296,7 @@ document.addEventListener("DOMContentLoaded",()=>{
     },
     sakura:{
       image:"./assets/characters/sakura.png",
+      video:"./assets/videos/sakura.mp4",
       fullName:"Haruno Sakura",
       village:"Konoha",
       rank:"Chunin",
@@ -313,6 +317,7 @@ document.addEventListener("DOMContentLoaded",()=>{
     },
     kakashi:{
       image:"./assets/characters/kakashi.png",
+      video:"./assets/videos/kakashi.mp4",
       fullName:"Hatake Kakashi",
       village:"Konoha",
       rank:"Jonin",
@@ -333,6 +338,7 @@ document.addEventListener("DOMContentLoaded",()=>{
     },
     itachi:{
       image:"./assets/characters/itachi.png",
+      video:"./assets/videos/itachi.mp4",
       fullName:"Uchiha Itachi",
       village:"Konoha",
       rank:"ANBU",
@@ -353,6 +359,7 @@ document.addEventListener("DOMContentLoaded",()=>{
     },
     gaara:{
       image:"./assets/characters/gaara.png",
+      video:"./assets/videos/gaara.mp4",
       fullName:"Gaara",
       village:"Sunagakure",
       rank:"Kazekage",
@@ -402,38 +409,78 @@ document.addEventListener("DOMContentLoaded",()=>{
   const heroImage=document.getElementById("heroCharacterImage");
   const heroVideo=document.getElementById("heroHomeVideo");
 
-  // HOME VIDEO v12: video-ul este afisat imediat in locul imaginii.
-  // Imaginea personajului apare doar daca fisierul video chiar esueaza.
-  if(heroVideo){
-    hero.classList.add("home-video-mode");
+  // HOME VIDEO v13: fiecare personaj are propriul fisier video.
+  // Daca fisierul lipseste, aplicatia afiseaza automat imaginea personajului.
+  let videoUnlockBound=false;
+
+  function bindVideoUnlock(){
+    if(videoUnlockBound) return;
+    videoUnlockBound=true;
+    const unlock=()=>{
+      if(heroVideo && hero.classList.contains("home-video-mode")){
+        heroVideo.muted=true;
+        heroVideo.defaultMuted=true;
+        heroVideo.play().catch(()=>{});
+      }
+      document.removeEventListener("touchstart",unlock,true);
+      document.removeEventListener("pointerdown",unlock,true);
+      videoUnlockBound=false;
+    };
+    document.addEventListener("touchstart",unlock,true);
+    document.addEventListener("pointerdown",unlock,true);
+  }
+
+  function loadCharacterVideo(c,key,fromUser=false){
+    if(!heroVideo) return;
+
+    heroVideo.pause();
+    heroVideo.removeAttribute("src");
+    heroVideo.load();
+    heroVideo.poster=c.image;
     heroVideo.muted=true;
     heroVideo.defaultMuted=true;
     heroVideo.volume=0;
 
-    const tryPlay=()=>{
+    // Afisam video-ul imediat; daca fisierul nu exista, revenim la poza.
+    hero.classList.add("home-video-mode");
+    heroVideo.src=c.video+"?v=15";
+    heroVideo.dataset.character=key;
+
+    const expectedKey=key;
+    let started=false;
+
+    const startNow=()=>{
+      if(heroVideo.dataset.character!==expectedKey) return;
+      hero.classList.add("home-video-mode");
+      try{ heroVideo.currentTime=0; }catch(e){}
       const result=heroVideo.play();
       if(result && typeof result.catch==="function"){
-        result.catch(()=>{
-          // iOS poate cere prima atingere; video-ul/posterul ramane vizibil.
-          const unlock=()=>{
-            heroVideo.muted=true;
-            heroVideo.play().catch(()=>{});
-            document.removeEventListener("touchstart",unlock,true);
-            document.removeEventListener("pointerdown",unlock,true);
-          };
-          document.addEventListener("touchstart",unlock,true);
-          document.addEventListener("pointerdown",unlock,true);
-        });
+        result.catch(()=>bindVideoUnlock());
       }
+      started=true;
     };
 
-    if(heroVideo.readyState>=2) tryPlay();
-    else heroVideo.addEventListener("canplay",tryPlay,{once:true});
-
-    heroVideo.addEventListener("error",()=>{
+    const fail=()=>{
+      if(heroVideo.dataset.character!==expectedKey) return;
       hero.classList.remove("home-video-mode");
-    });
+    };
+
+    const ready=()=>{
+      if(heroVideo.dataset.character!==expectedKey) return;
+      if(!started) startNow();
+    };
+
+    heroVideo.onerror=fail;
+    heroVideo.onloadeddata=ready;
+    heroVideo.oncanplay=ready;
+    heroVideo.load();
+
+    // La apăsarea pe un personaj încercăm PLAY chiar în gestul utilizatorului.
+    // Asta face schimbarea mult mai rapidă în PWA pe Android/iPhone.
+    if(fromUser) startNow();
+    else if(heroVideo.readyState>=2) ready();
   }
+
   const speech=document.getElementById("characterSpeech");
   const portrait=document.getElementById("profilePortrait");
   const portraitEmoji=document.getElementById("profilePortraitEmoji");
@@ -441,7 +488,7 @@ document.addEventListener("DOMContentLoaded",()=>{
   if(!characters[active]) active="naruto";
   let lastSpeech="";
 
-  function applyCharacter(key,announce=true){
+  function applyCharacter(key,announce=true,fromUser=false){
     if(!characters[key]) return;
     active=key;
     localStorage.setItem("narutoSelectedCharacter",key);
@@ -455,6 +502,7 @@ document.addEventListener("DOMContentLoaded",()=>{
     hero.style.setProperty("--hero-aura",c.aura);
     heroImage.src=c.image;
     heroImage.alt=c.fullName;
+    loadCharacterVideo(c,key,fromUser);
 
     const oldEmblem=document.getElementById("heroEmblem");
     if(oldEmblem) oldEmblem.textContent=c.emblem;
@@ -506,7 +554,7 @@ document.addEventListener("DOMContentLoaded",()=>{
   }
 
   document.querySelectorAll(".character-tile").forEach(tile=>{
-    tile.addEventListener("click",()=>applyCharacter(tile.dataset.character,true));
+    tile.addEventListener("click",()=>applyCharacter(tile.dataset.character,true,true));
   });
 
   document.getElementById("talkCharacter").addEventListener("click",()=>showSpeech(false));

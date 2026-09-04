@@ -1626,3 +1626,79 @@ a{color:inherit}
 @media(prefers-reduced-motion:reduce){
   .hero-home-video{animation:none!important;}
 }
+
+
+/* =========================================================
+   HOME VIDEO v15 - VIDEO MARE + START LA APASAREA PERSONAJULUI
+   Clipul selectat ocupa clar zona centrala a scenei.
+========================================================= */
+.hero-character.realistic-mode{
+  width:620px;
+  height:500px;
+}
+.hero-home-video{
+  left:50%;
+  bottom:38px;
+  width:560px;
+  height:360px;
+  max-width:none;
+  object-fit:cover;
+  object-position:center center;
+  border-radius:22px;
+  background:#050505;
+  box-shadow:
+    0 22px 42px rgba(0,0,0,.48),
+    0 0 0 1px rgba(255,255,255,.08),
+    0 0 28px var(--hero-aura);
+  filter:saturate(1.05) contrast(1.04);
+}
+.hero-character.home-video-mode .hero-aura{
+  width:520px;
+  height:330px;
+  top:18%;
+}
+.hero-character.home-video-mode .hero-shadow{
+  width:390px;
+  bottom:23px;
+}
+
+@media(max-width:900px){
+  .hero-character.realistic-mode{
+    width:520px;
+  }
+  .hero-home-video{
+    width:470px;
+    height:320px;
+  }
+}
+
+@media(max-width:560px){
+  .hero-character.realistic-mode{
+    left:50%;
+    width:100vw;
+    height:430px;
+  }
+  .hero-home-video{
+    width:calc(100vw - 34px);
+    height:285px;
+    bottom:132px;
+    border-radius:18px;
+    object-fit:cover;
+  }
+  .hero-character.home-video-mode .hero-aura{
+    width:88vw;
+    height:250px;
+    top:2%;
+  }
+  .hero-character.home-video-mode .hero-shadow{
+    display:none;
+  }
+}
+
+@media(max-width:390px){
+  .hero-home-video{
+    width:calc(100vw - 24px);
+    height:260px;
+    bottom:142px;
+  }
+}

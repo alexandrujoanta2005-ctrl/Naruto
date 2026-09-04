@@ -1,5 +1,5 @@
 
-const CACHE="ninja-pwa-v12";
+const CACHE="ninja-pwa-v15";
 const ASSETS=[
   "./","./index.html","./quiz.html","./missions.html","./jutsu.html","./profile.html","./inventory.html",
   "./style.css","./app.js","./questions.js","./quiz.js",
