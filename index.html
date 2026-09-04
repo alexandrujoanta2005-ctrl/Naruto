@@ -433,50 +433,64 @@ document.addEventListener("DOMContentLoaded",()=>{
   function loadCharacterVideo(c,key,fromUser=false){
     if(!heroVideo) return;
 
+    // v17: schimbăm sursa într-un singur pas. În v16 exista un load() fără src
+    // care putea emite un error întârziat și ascundea video-ul nou, lăsând doar poza.
+    heroVideo.onerror=null;
+    heroVideo.onloadeddata=null;
+    heroVideo.oncanplay=null;
+    heroVideo.onplaying=null;
     heroVideo.pause();
-    heroVideo.removeAttribute("src");
-    heroVideo.load();
-    heroVideo.poster=c.image;
+
     heroVideo.muted=true;
     heroVideo.defaultMuted=true;
     heroVideo.volume=0;
-
-    // Afisam video-ul imediat; daca fisierul nu exista, revenim la poza.
-    hero.classList.add("home-video-mode");
-    heroVideo.src=c.video+"?v=15";
+    heroVideo.removeAttribute("poster");
     heroVideo.dataset.character=key;
+    heroVideo.src=c.video+"?v=17";
+    hero.classList.add("home-video-mode");
 
     const expectedKey=key;
-    let started=false;
+    const expectedSrc=c.video;
+    let playRequested=false;
+
+    const isCurrent=()=>heroVideo.dataset.character===expectedKey;
 
     const startNow=()=>{
-      if(heroVideo.dataset.character!==expectedKey) return;
+      if(!isCurrent()) return;
       hero.classList.add("home-video-mode");
       try{ heroVideo.currentTime=0; }catch(e){}
+      playRequested=true;
       const result=heroVideo.play();
       if(result && typeof result.catch==="function"){
         result.catch(()=>bindVideoUnlock());
       }
-      started=true;
-    };
-
-    const fail=()=>{
-      if(heroVideo.dataset.character!==expectedKey) return;
-      hero.classList.remove("home-video-mode");
     };
 
     const ready=()=>{
-      if(heroVideo.dataset.character!==expectedKey) return;
-      if(!started) startNow();
+      if(!isCurrent()) return;
+      hero.classList.add("home-video-mode");
+      if(!playRequested || heroVideo.paused) startNow();
+    };
+
+    const fail=()=>{
+      if(!isCurrent()) return;
+      // Fallback la imagine doar dacă sursa curentă chiar a eșuat.
+      const current=(heroVideo.currentSrc||heroVideo.src||"");
+      if(current && current.includes(expectedSrc.replace("./",""))){
+        hero.classList.remove("home-video-mode");
+      }
     };
 
     heroVideo.onerror=fail;
     heroVideo.onloadeddata=ready;
     heroVideo.oncanplay=ready;
+    heroVideo.onplaying=()=>{
+      if(isCurrent()) hero.classList.add("home-video-mode");
+    };
+
     heroVideo.load();
 
-    // La apăsarea pe un personaj încercăm PLAY chiar în gestul utilizatorului.
-    // Asta face schimbarea mult mai rapidă în PWA pe Android/iPhone.
+    // La click/touch cerem play chiar în gestul utilizatorului.
     if(fromUser) startNow();
     else if(heroVideo.readyState>=2) ready();
   }

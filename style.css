@@ -1764,3 +1764,14 @@ a{color:inherit}
     object-fit:cover!important;
   }
 }
+
+
+/* v17 - video real vizibil, fără poster static */
+.hero-character.home-video-mode .hero-home-video{
+  display:block!important;
+  opacity:1!important;
+  visibility:visible!important;
+}
+.hero-character.home-video-mode .hero-character-image{
+  display:none!important;
+}
