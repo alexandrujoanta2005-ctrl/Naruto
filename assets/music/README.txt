@@ -1,0 +1,1 @@
+Pune aici un fișier audio numit menu.mp3 pentru butonul de muzică din Home. Folosește audio pentru care ai drepturi.\n
