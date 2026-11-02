@@ -1,7 +1,7 @@
 
-const CACHE="ninja-pwa-v17";
+const CACHE="ninja-pwa-v18";
 const ASSETS=[
-  "./","./index.html","./quiz.html","./missions.html","./jutsu.html","./profile.html","./inventory.html",
+  "./","./index.html","./map.html","./admin.html","./quiz.html","./missions.html","./jutsu.html","./profile.html","./inventory.html",
   "./style.css","./app.js","./questions.js","./quiz.js",
   "./manifest.json","./icon-192.png","./icon-512.png","./apple-touch-icon.png",
   "./assets/home-video-poster.jpg",

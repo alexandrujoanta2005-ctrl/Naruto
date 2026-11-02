@@ -164,3 +164,12 @@ VERSIUNEA v9 — QUIZ 100000
 IMPORTANT:
 Cele 100000 sunt variante generate din baza de întrebări-fapt existente.
 Nu sunt 100000 de fapte canonice Naruto diferite verificate manual.
+
+
+ VERSIUNEA v10 — EXPLORARE + ADMIN DEMO + MUZICĂ
+ - Home: link către hartă și panou Admin + control muzică.
+ - map.html: hartă demonstrativă Konoha; deplasare cu WASD/săgeți și butoane.
+ - admin.html: acces demo pe email alexandrujoanta6@gmail.com; player audio și anunț local.
+ - Pentru muzica Home pune assets/music/menu.mp3 (fișier audio pentru care ai drepturi).
+ IMPORTANT: Admin-ul din acest ZIP este doar o demonstrație locală; verificarea emailului în browser NU este securitate reală și nu se sincronizează. Admin real trebuie protejat server-side cu Supabase Auth/RLS.
+ 
