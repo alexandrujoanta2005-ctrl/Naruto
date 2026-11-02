@@ -1775,3 +1775,24 @@ a{color:inherit}
 .hero-character.home-video-mode .hero-character-image{
   display:none!important;
 }
+
+/* SHINOBI LEGENDS additions */
+.quick-tools{display:flex;flex-wrap:wrap;gap:8px;margin:0 0 14px;padding:10px;border:1px solid var(--line);border-radius:16px;background:rgba(255,255,255,.04)}
+.quick-tool{display:inline-flex;align-items:center;justify-content:center;gap:6px;min-height:40px;padding:9px 12px;border:1px solid rgba(255,255,255,.12);border-radius:12px;background:#211812;color:#fff;text-decoration:none;font-weight:800;font-size:11px;cursor:pointer}
+.music-status{align-self:center;color:var(--muted);font-size:10px}
+.explore-wrap{max-width:900px;margin:auto}
+.explore-map{position:relative;height:min(68vh,570px);min-height:380px;overflow:hidden;border:2px solid #6b4a2a;border-radius:22px;background:linear-gradient(#6da7d6 0 30%,#9acb83 30% 100%)}
+.map-road{position:absolute;left:0;top:48%;width:100%;height:70px;background:#c9b58a;transform:rotate(-13deg);border:8px solid #a58b61}
+.map-water{position:absolute;right:-4%;top:8%;width:34%;height:45%;background:#4aa6d5;border-radius:45% 0 40% 55%;opacity:.9}
+.map-tree{position:absolute;font-size:30px;filter:drop-shadow(0 3px 2px #365b2b)}
+.map-building{position:absolute;font-size:38px}
+.player-token{position:absolute;z-index:5;font-size:32px;left:50%;top:50%;transform:translate(-50%,-50%);transition:left .12s linear,top .12s linear;filter:drop-shadow(0 4px 2px #222}
+.map-controls{display:flex;gap:8px;justify-content:center;flex-wrap:wrap;margin:12px 0}
+.map-controls button{min-width:54px;min-height:44px;border:0;border-radius:12px;background:#322318;color:white;font-size:20px}
+.map-note{color:var(--muted);font-size:12px;text-align:center}
+.admin-panel{max-width:700px;margin:auto}
+.admin-lock,.admin-content{padding:20px;border:1px solid var(--line);border-radius:20px;background:rgba(255,255,255,.04)}
+.admin-panel input,.admin-panel textarea{width:100%;padding:12px;margin:7px 0;border:1px solid var(--line);border-radius:12px;background:#17120f;color:white}
+.admin-panel button{padding:11px 15px;border:0;border-radius:12px;background:var(--accent);color:white;font-weight:800}
+.admin-content[hidden]{display:none}
+.admin-warning{color:#ffcf85;font-size:12px;line-height:1.5}
