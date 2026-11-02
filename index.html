@@ -15,6 +15,13 @@
 <body class="naruto-home-v3">
 
 <main class="app ninja-dashboard">
+  <section class="quick-tools" aria-label="Instrumente joc">
+    <a class="quick-tool" href="./map.html">🗺️ HARTA · EXPLOREAZĂ</a>
+    <a class="quick-tool" href="./admin.html">🛡️ PANOU ADMIN</a>
+    <button class="quick-tool" id="musicToggle" type="button">🎵 PORNEȘTE MUZICA</button>
+    <audio id="bgMusic" loop preload="none"><source src="./assets/music/menu.mp3" type="audio/mpeg"></audio>
+    <span id="musicStatus" class="music-status">Muzica pornește după apăsare</span>
+  </section>
 
   <section class="ninja-profile-top">
     <div class="profile-left">
@@ -595,5 +602,18 @@ document.addEventListener("DOMContentLoaded",()=>{
 });
 </script>
 
+
+<script>
+(()=> {
+ const audio=document.getElementById('bgMusic'), btn=document.getElementById('musicToggle'), status=document.getElementById('musicStatus');
+ if(!audio||!btn)return;
+ audio.volume=.35;
+ btn.addEventListener('click',async()=>{
+   if(audio.paused){try{await audio.play();btn.textContent='🔇 OPREȘTE MUZICA';status.textContent='Muzică activă';}
+   catch(e){status.textContent='Adaugă fișierul assets/music/menu.mp3 pentru muzică.';}}
+   else{audio.pause();btn.textContent='🎵 PORNEȘTE MUZICA';status.textContent='Muzică oprită';}
+ });
+})();
+</script>
 </body>
 </html>
